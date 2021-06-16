@@ -23,7 +23,7 @@ jobs:
         run: "dotnet restore"
 
       - name: "Publish"
-        run: "dotnet publish --no-restore --nolog -c Release"
+        run: "dotnet publish --no-restore --nologo -c Release"
 
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
