@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+
     steps:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1.8.0
@@ -22,7 +23,7 @@ jobs:
       - name: Set current date as env variable
         id: tag_name_step
         shell: pwsh
-        run: [Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss") >> $TAG_NAME
+        run: '[Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss") >> $TAG_NAME'
 
       - name: Create release
         id: create_release
