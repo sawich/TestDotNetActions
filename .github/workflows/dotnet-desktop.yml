@@ -45,7 +45,7 @@ jobs:
 
       - name: Pack archive
         shell: pwsh
-        run: Compress-Archive ConsoleApp1/bin/Release/net6.0/publish/* win-x64.zip
+        run: Compress-Archive ConsoleApp1/bin/Release/net6.0/publish/* ConsoleApp1/bin/Release/net6.0/publish/win-x64.zip
 
       - uses: marvinpinto/action-automatic-releases@latest
         with:
