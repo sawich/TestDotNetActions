@@ -35,10 +35,9 @@ jobs:
         run: "dotnet publish --no-restore --nologo -c Release"
 
       - name: "Changelog"
-        uses: "scottbrenner/generate-changelog-action@master"
-        id: "Changelog"
-        env:
-          REPO: ${{ github.repository }}
+        uses: heinrichreimer/github-changelog-generator-action@v2.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
