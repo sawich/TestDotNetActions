@@ -32,6 +32,9 @@ jobs:
           dotnet-version: 6.0.x
           include-prerelease: true
 
+      - name: .NET
+        run: dotnet --list-sdks
+
       - name: Restore dependencies
         run: dotnet restore
 
