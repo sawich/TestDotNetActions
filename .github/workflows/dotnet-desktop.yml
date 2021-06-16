@@ -12,6 +12,12 @@ jobs:
     outputs:
       TAG_NAME: ${{ steps.tag_name_step.outputs.TAG_NAME }}
     steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1.8.0
+        with:
+          dotnet-version: 6.0.x
+          include-prerelease: true
+
       - name: Set current date as env variable
         id: tag_name_step
         shell: pwsh
@@ -26,14 +32,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1.8.0
-        with:
-          dotnet-version: 6.0.x
-          include-prerelease: true
+      # - name: Setup .NET
+      #   uses: actions/setup-dotnet@v1.8.0
+      #   with:
+      #     dotnet-version: 6.0.x
+      #     include-prerelease: true
 
-      - name: .NET
-        run: dotnet --list-sdks
+      # - name: .NET
+      #   run: dotnet --list-sdks
 
       - name: Restore dependencies
         run: dotnet restore
@@ -46,11 +52,15 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pack archive
+      - name: Archiving
         shell: pwsh
         run: Compress-Archive ConsoleApp1/bin/Release/net6.0/publish/* ConsoleApp1/bin/Release/net6.0/publish/win-x64.zip
 
-      - uses: marvinpinto/action-automatic-releases@latest
+    deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+      - name: Release
+        uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           automatic_release_tag: ${{ needs.set_variables.outputs.TAG_NAME }}
