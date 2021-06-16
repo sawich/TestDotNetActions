@@ -49,4 +49,4 @@ jobs:
           automatic_release_tag: ${{ needs.set_variables.outputs.TAG_NAME }}
           prerelease: true
           title: Development Build
-          files: ./TestDotNetActions/ConsoleApp1/bin/Release/net6.0/publish/**/*
+          files: ./TestDotNetActions/TestDotNetActions/ConsoleApp1/bin/Release/net6.0/publish/**/*
