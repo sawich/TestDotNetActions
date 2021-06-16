@@ -11,6 +11,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Set current date as env variable"
+        shell: pwsh
         run: '[Environment]::Version.ToString() + "_" + [DateTime]::Now.ToString("yyyy-m-dTHH:MM:ss")'
 
   build:
