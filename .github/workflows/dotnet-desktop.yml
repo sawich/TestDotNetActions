@@ -7,10 +7,11 @@ on:
     branches: [main]
 
 jobs:
-  set_variables:
+  create_release:
+    name: Create release
     runs-on: ubuntu-latest
     outputs:
-      TAG_NAME: ${{ steps.tag_name_step.outputs.TAG_NAME }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1.8.0
@@ -21,13 +22,31 @@ jobs:
       - name: Set current date as env variable
         id: tag_name_step
         shell: pwsh
-        run: |
-          $v = "v" + [Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss")
-          echo "::set-output name=TAG_NAME::$v"
+        run: [Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss") >> $TAG_NAME
+
+      - name: Create release
+        id: create_release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ TAG_NAME }}
+          prerelease: true
+          title: Development Build
 
   build:
-    runs-on: ubuntu-latest
-    needs: [set_variables]
+    needs: [create_release]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            runtime: linux-x64
+          - os: macos-latest
+            runtime: osx-x64
+          - os: windows-latest
+            runtime: win-x64
+
     steps:
       - uses: actions/checkout@v2.3.4
 
@@ -50,17 +69,10 @@ jobs:
 
       - name: Archiving
         shell: pwsh
-        run: Compress-Archive ConsoleApp1/bin/Release/net6.0/publish/* ConsoleApp1/bin/Release/net6.0/publish/win-x64.zip
+        run: Compress-Archive ConsoleApp1/bin/Release/net6.0/publish/* ConsoleApp1/bin/Release/net6.0/publish/${{ matrix.runtime }}.zip -r ${{ matrix.runtime }}
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [build, set_variables]
-    steps:
-      - name: Release
-        uses: marvinpinto/action-automatic-releases@latest
+    - name: Upload asset
+      uses: shogo82148/actions-upload-release-asset@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: ${{ needs.set_variables.outputs.TAG_NAME }}
-          prerelease: true
-          title: Development Build
-          files: ConsoleApp1/bin/Release/net6.0/publish/win-x64.zip
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ConsoleApp1/bin/Release/net6.0/publish/${{ matrix.runtime }}.zip
