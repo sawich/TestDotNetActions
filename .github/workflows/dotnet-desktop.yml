@@ -80,5 +80,5 @@ jobs:
       - name: Upload asset
         uses: shogo82148/actions-upload-release-asset@v1
         with:
-          upload_url: ${{ needs.jobs.create_release.outputs.upload_url }}
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ConsoleApp1/bin/Release/net6.0/publish/${{ matrix.runtime }}.zip
