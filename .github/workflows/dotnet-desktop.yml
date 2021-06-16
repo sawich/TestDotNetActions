@@ -27,6 +27,11 @@ jobs:
           $v = "v" + [Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss")
           echo "::set-output name=tag_name::$v"
 
+      - name: Changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
@@ -64,11 +69,6 @@ jobs:
 
       - name: Publish
         run: dotnet publish --no-restore --nologo -c Release -r ${{ matrix.runtime }}
-
-      - name: Changelog
-        uses: heinrichreimer/github-changelog-generator-action@v2.1.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Archiving
         shell: pwsh
