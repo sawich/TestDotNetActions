@@ -16,7 +16,7 @@ jobs:
         id: tag_name_step
         shell: pwsh
         run: |
-          $v = [Environment]::Version.ToString() + "_" + [DateTime]::Now.ToString("yyyy-m-dTHH:MM:ss")
+          $v = [Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyy-m-dTHH:MM:ss")
           echo "::set-output name=TAG_NAME::$v"
 
   build:
