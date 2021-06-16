@@ -11,7 +11,6 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     outputs:
-      tag_name: ${{ steps.create_release.outputs.tag_name }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
 
     steps:
@@ -33,7 +32,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: ${{ steps.create_release.outputs.tag_name }}
+          automatic_release_tag: ${{ steps.tag_name.outputs.tag_name }}
           prerelease: true
           title: Development Build
 
