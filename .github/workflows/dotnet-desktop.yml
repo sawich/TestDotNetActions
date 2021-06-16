@@ -39,6 +39,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      -name: "Asd"
+        shell: pwsh
+        run: "echo ${{ needs.jobs.set_variables.steps.tag_name_step.outputs.TAG_NAME }}"
+
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
