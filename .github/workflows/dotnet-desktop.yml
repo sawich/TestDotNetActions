@@ -68,7 +68,10 @@ jobs:
         run: dotnet restore
 
       - name: Publish
-        run: dotnet publish --no-restore --nologo -c Release -r ${{ matrix.runtime }}
+        run: dotnet publish --no-restore --nologo -c Release
+
+      - name: Ls
+        run: ls ConsoleApp1/bin/Release/net6.0/publish
 
       - name: Archiving
         shell: pwsh
