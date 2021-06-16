@@ -54,7 +54,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [build, set_variables]
     steps:
       - name: Release
         uses: marvinpinto/action-automatic-releases@latest
