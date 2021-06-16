@@ -9,11 +9,13 @@ on:
 jobs:
   set_variables:
     runs-on: "ubuntu-latest"
+    outputs:
+      TAG_NAME: ${{ steps.tag_name_step.outputs.TAG_NAME }}
     steps:
       - name: "Set current date as env variable"
         id: "tag_name_step"
         shell: pwsh
-        run: '[Environment]::Version.ToString() + "_" + [DateTime]::Now.ToString("yyyy-m-dTHH:MM:ss") >> $TAG_NAME'
+        run: 'echo "::set-output name=TAG_NAME::[Environment]::Version.ToString() + \"_\" + [DateTime]::Now.ToString(\"yyyy-m-dTHH:MM:ss\")"'
 
   build:
     runs-on: "ubuntu-latest"
@@ -41,12 +43,12 @@ jobs:
 
       - name: "Asd"
         shell: pwsh
-        run: "echo ${{ needs.jobs.set_variables.steps.tag_name_step.outputs.TAG_NAME }}"
+        run: "echo ${{ needs.set_variables.outputs.TAG_NAME }}"
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ needs.jobs.set_variables.steps.tag_name_step.outputs.TAG_NAME }}"
+          automatic_release_tag: "${{ needs.set_variables.outputs.TAG_NAME }}"
           prerelease: true
           title: "Development Build"
           files: "ConsoleApp1\\bin\\Release\\net6.0\\publish\\**\\*"
