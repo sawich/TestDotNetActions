@@ -11,6 +11,7 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     outputs:
+      TAG_NAME: ${{ steps.create_release.outputs.tag_name }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
 
     steps:
@@ -20,12 +21,19 @@ jobs:
           dotnet-version: 6.0.x
           include-prerelease: true
 
+      - name: Set current date as env variable
+        id: tag_name
+        shell: pwsh
+        run: |
+          $v = "v" + [Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss")
+          echo "::set-output name=TAG_NAME::$v"
+
       - name: Create release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: "v" + [Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss")
+          automatic_release_tag: ${{ steps.outputs.TAG_NAME  }}
           prerelease: true
           title: Development Build
 
