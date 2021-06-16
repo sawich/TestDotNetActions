@@ -23,7 +23,7 @@ jobs:
       - name: Set current date as env variable
         id: tag_name_step
         shell: pwsh
-        run: '[Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss") >> $TAG_NAME'
+        run: 'echo "[Environment]::Version.ToString() +\ "-\" + [DateTime]::Now.ToString(\"yyyymdHHMMss\")" >> $TAG_NAME'
 
       - name: Create release
         id: create_release
