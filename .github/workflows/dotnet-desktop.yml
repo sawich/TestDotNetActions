@@ -25,14 +25,14 @@ jobs:
         shell: pwsh
         run: |
           $v = "v" + [Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss")
-          echo "TAG_NAME=$v" >> $GITHUB_ENV
+          echo "::set-output name=TAG_NAME::$v"
 
       - name: Create release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: ${{ env.TAG_NAME }}
+          automatic_release_tag: ${{ outputs.TAG_NAME  }}
           prerelease: true
           title: Development Build
 
