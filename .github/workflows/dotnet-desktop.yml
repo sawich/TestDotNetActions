@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: "Set current date as env variable"
         shell: pwsh
-        run: '[Environment]::Version.ToString() + "_" + [DateTime]::Now.ToString("yyyy-m-dTHH:MM:ss")'
+        run: '[Environment]::Version.ToString() + "_" + [DateTime]::Now.ToString("yyyy-m-dTHH:MM:ss") >> $TAG_NAME'
 
   build:
     runs-on: "ubuntu-latest"
@@ -42,7 +42,7 @@ jobs:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          automatic_release_tag: "${{ TAG_NAME }}"
           prerelease: true
           title: "Development Build"
           files: "ConsoleApp1\\bin\\Release\\net6.0\\publish\\**\\*"
