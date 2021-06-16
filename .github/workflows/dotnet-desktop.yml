@@ -43,10 +43,14 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Pack archive
+        shell: pwsh
+        run: Compress-Archive ConsoleApp1/bin/Release/net6.0/publish/* win-x64.zip
+
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           automatic_release_tag: ${{ needs.set_variables.outputs.TAG_NAME }}
           prerelease: true
           title: Development Build
-          files: ./TestDotNetActions/TestDotNetActions/ConsoleApp1/bin/Release/net6.0/publish/**/*
+          files: ConsoleApp1/bin/Release/net6.0/publish/win-x64.zip
