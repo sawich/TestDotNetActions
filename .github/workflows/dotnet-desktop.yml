@@ -1,54 +1,56 @@
-name: ".NET"
+name: .NET
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
+    branches: [main]
 
 jobs:
   set_variables:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     outputs:
       TAG_NAME: ${{ steps.tag_name_step.outputs.TAG_NAME }}
     steps:
-      - name: "Set current date as env variable"
-        id: "tag_name_step"
+      - name: Set current date as env variable
+        id: tag_name_step
         shell: pwsh
-        run: 'echo "::set-output name=TAG_NAME::[Environment]::Version.ToString() + \"_\" + [DateTime]::Now.ToString(\"yyyy-m-dTHH:MM:ss\")"'
+        run: |
+          $v = [Environment]::Version.ToString() + "_" + [DateTime]::Now.ToString("yyyy-m-dTHH:MM:ss")
+          echo "::set-output name=TAG_NAME::$v"
 
   build:
-    runs-on: "ubuntu-latest"
-    needs: ["set_variables"]
+    runs-on: ubuntu-latest
+    needs: [set_variables]
 
     steps:
-      - uses: "actions/checkout@v2.3.4"
+      - name: Asd
+        shell: pwsh
+        run: echo ${{ needs.set_variables.outputs.TAG_NAME }}
 
-      - name: "Setup .NET"
-        uses: "actions/setup-dotnet@v1.8.0"
+      - uses: actions/checkout@v2.3.4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1.8.0
         with:
-          dotnet-version: "6.0.x"
+          dotnet-version: 6.0.x
           include-prerelease: true
 
-      - name: "Restore dependencies"
-        run: "dotnet restore"
+      - name: Restore dependencies
+        run: dotnet restore
 
-      - name: "Publish"
-        run: "dotnet publish --no-restore --nologo -c Release"
+      - name: Publish
+        run: dotnet publish --no-restore --nologo -c Release
 
-      - name: "Changelog"
+      - name: Changelog
         uses: heinrichreimer/github-changelog-generator-action@v2.1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Asd"
-        shell: pwsh
-        run: "echo ${{ needs.set_variables.outputs.TAG_NAME }}"
-
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ needs.set_variables.outputs.TAG_NAME }}"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ needs.set_variables.outputs.TAG_NAME }}
           prerelease: true
-          title: "Development Build"
-          files: "ConsoleApp1\\bin\\Release\\net6.0\\publish\\**\\*"
+          title: Development Build
+          files: ConsoleApp1\\bin\\Release\\net6.0\\publish\\**\\*
