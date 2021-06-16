@@ -11,7 +11,7 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     outputs:
-      TAG_NAME: ${{ steps.create_release.outputs.tag_name }}
+      tag_name: ${{ steps.tag_name.outputs.TAG_NAME }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
 
     steps:
@@ -26,14 +26,14 @@ jobs:
         shell: pwsh
         run: |
           $v = "v" + [Environment]::Version.ToString() + "-" + [DateTime]::Now.ToString("yyyymdHHMMss")
-          echo "::set-output name=TAG_NAME::$v"
+          echo "::set-output name=tag_name::$v"
 
       - name: Create release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: ${{ steps.create_release.outputs.TAG_NAME }}
+          automatic_release_tag: ${{ steps.create_release.outputs.tag_name }}
           prerelease: true
           title: Development Build
 
